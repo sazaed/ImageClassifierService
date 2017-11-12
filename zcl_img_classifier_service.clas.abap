@@ -11,8 +11,7 @@ CLASS zcl_img_classifier_service DEFINITION
 
     METHODS add_image_by_uri
       IMPORTING
-        image_uri TYPE string
-        name      TYPE string.
+        image_uri TYPE string.
 
     METHODS classify_image
       IMPORTING
@@ -46,7 +45,7 @@ CLASS zcl_img_classifier_service IMPLEMENTATION.
     me->go_cf_service->add_binary_by_uri(
       EXPORTING
         iv_uri  = image_uri
-        iv_name = name
+        iv_name = 'file'
     ).
 
   ENDMETHOD.
@@ -62,7 +61,7 @@ CLASS zcl_img_classifier_service IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_prediction_json.
-    json = me->go_cf_srv_response->get_body( ).
+    json = me->go_cf_srv_response->get_array( 'predictions' ).
   ENDMETHOD.
 
 ENDCLASS.

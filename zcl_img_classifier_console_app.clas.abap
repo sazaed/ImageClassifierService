@@ -25,10 +25,7 @@ CLASS zcl_img_classifier_console_app IMPLEMENTATION.
 
     DATA(cf_img_classifier) = NEW zcl_img_classifier_service( cf_service ).
 
-    cf_img_classifier->add_image_by_uri( EXPORTING
-        image_uri = '/sap/public/bc/images/sap_logo2.jpg'
-        name      = 'file'
-    ).
+    cf_img_classifier->add_image_by_uri( image_uri = '/sap/public/bc/images/sap_logo2.jpg' ).
 
     cf_img_classifier->classify_image( EXPORTING
         model_name = 'brands-model'
