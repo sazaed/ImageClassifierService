@@ -9,9 +9,21 @@ CLASS zcl_img_classifier_service DEFINITION
         IMPORTING
           service TYPE REF TO if_cf_service.
 
-    METHODS add_image_by_uri IMPORTING image_uri TYPE string.
-    METHODS classify_image IMPORTING model_name TYPE string model_version TYPE i RETURNING VALUE(return_code) TYPE string.
-    METHODS get_result_json RETURNING VALUE(json) TYPE string.
+    METHODS add_image_by_uri
+      IMPORTING
+        image_uri TYPE string
+        name      TYPE string.
+
+    METHODS classify_image
+      IMPORTING
+        model_name    TYPE string
+        model_version TYPE i
+      RETURNING
+        VALUE(return_code) TYPE string.
+
+    METHODS get_prediction_json
+        RETURNING
+            VALUE(json) TYPE string.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -30,18 +42,26 @@ CLASS zcl_img_classifier_service IMPLEMENTATION.
     me->go_cf_service = service.
   ENDMETHOD.
 
-
-
   METHOD add_image_by_uri.
-    "Implement...
+    me->go_cf_service->add_binary_by_uri(
+      EXPORTING
+        iv_uri  = image_uri
+        iv_name = name
+    ).
+
   ENDMETHOD.
 
   METHOD classify_image.
-    "ToDo write body.
-    me->go_cf_srv_response = me->go_cf_service->post( 'body' ).
+    data lv_model_version type string.
+    lv_model_version = model_version.
+
+    me->go_cf_service->add_form_data( iv_name = 'model_name' iv_value = model_name ).
+    me->go_cf_service->add_form_data( iv_name = 'model_version' iv_value = lv_model_version ).
+
+    me->go_cf_srv_response = me->go_cf_service->post_multiform( ).
   ENDMETHOD.
 
-  METHOD get_result_json.
+  METHOD get_prediction_json.
     json = me->go_cf_srv_response->get_body( ).
   ENDMETHOD.
 

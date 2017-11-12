@@ -11,10 +11,11 @@ ENDCLASS.
 
 
 
-CLASS ZCL_IMG_CLASSIFIER_CONSOLE_APP IMPLEMENTATION.
+CLASS zcl_img_classifier_console_app IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
+
     DATA(cf_service_mgr) = cl_cf_servicemanager=>get_instance( ).
 
     DATA(cf_service) = cf_service_mgr->get_service(
@@ -24,11 +25,17 @@ CLASS ZCL_IMG_CLASSIFIER_CONSOLE_APP IMPLEMENTATION.
 
     DATA(cf_img_classifier) = NEW zcl_img_classifier_service( cf_service ).
 
-    cf_img_classifier->add_image_by_uri( 'https://localhost/sap/images/IPhoneX_2.JPG' ).
-    cf_img_classifier->classify_image( exporting model_name = 'products-demo' model_version = 2 ).
+    cf_img_classifier->add_image_by_uri( EXPORTING
+        image_uri = '/sap/public/bc/images/sap_logo2.jpg'
+        name      = 'file'
+    ).
 
-    data(dummy) = cf_img_classifier->get_result_json( ).
-    out->write( dummy ).
+    cf_img_classifier->classify_image( EXPORTING
+        model_name = 'brands-model'
+        model_version = 1
+    ).
+
+    out->write( cf_img_classifier->get_prediction_json( ) ).
 
   ENDMETHOD.
 ENDCLASS.
